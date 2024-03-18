@@ -7,27 +7,16 @@ import {
   Grid,
   Box,
   Divider,
-  CardMedia,
 } from "@mui/material";
-import {
-  Star,
-  StarBorder,
-  Wifi,
-  AcUnit,
-  Tv,
-  ArrowForward,
-  ArrowRight,
-} from "@mui/icons-material";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import NightlightIcon from '@mui/icons-material/Nightlight';
-// Morning: #FFD700 (Gold)
-// Noon: #FFA500 (Orange)
-// Evening: #FF6347 (Tomato)
-// Night: #483D8B (DarkSlateBlue)
+import { Star, StarBorder, Wifi, AcUnit, Tv } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import Path from "./Path";
+import Dates from "./Dates";
+import TripImage from "./TripImage";
 
 const TripCard = ({ trip }) => {
   const {
+    _id,
     image,
     organizer,
     title,
@@ -36,11 +25,14 @@ const TripCard = ({ trip }) => {
     departureTime,
     arrivalTime,
     fare,
-    bookedSeats,
     availableSeats,
     departureSlot,
     bus,
   } = trip;
+  const navigate = useNavigate();
+  const handleSubmit = () => {
+    navigate(`/book/${_id}`, { state: { id: _id } });
+  };
 
   const calculateRatingStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -62,58 +54,7 @@ const TripCard = ({ trip }) => {
 
   return (
     <Card sx={{ minWidth: 400 }}>
-      <Box sx={{ position: "relative" }}>
-        <CardMedia component="img" height="200" image={image} alt={title} />
-        <Box
-          sx={{
-            background: `${
-              departureSlot === "Morning"
-                ? "#EFC902"
-                : departureSlot === "Afternoon"
-                ? "#FFA500"
-                : departureSlot === "Evening"
-                ? "#FF6347"
-                : "#483D8B"
-            }`,
-            position: "absolute",
-            top: 0,
-            right: 0,
-            color: "white",
-            px: 2,
-            py: "6px",
-            display: "flex",
-            borderRadius: "0 0 0 10px",
-          }}
-        >
-            {
-              departureSlot === "Morning"
-                ? <LightModeIcon />
-                : departureSlot === "Afternoon"
-                ? <LightModeIcon />
-                : departureSlot === "Evening"
-                ? <WbTwilightIcon/>
-                : <NightlightIcon/>
-            }
-          
-        </Box>
-        <Box
-          sx={{
-            background: "#04A30C",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            color: "white",
-            px: 2,
-            py: 1,
-            display: "flex",
-            borderRadius: "0 0 10px 0",
-          }}
-        >
-          <Typography sx={{ fontSize: "14px", fontWeight: "bold" }}>
-            20% OFF
-          </Typography>
-        </Box>
-      </Box>
+      <TripImage image={image} departureSlot={departureSlot} title={title} />
       <CardContent>
         <Typography
           variant="h5"
@@ -130,101 +71,13 @@ const TripCard = ({ trip }) => {
         >
           {organizer.name}
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="body1"
-              gutterBottom
-              sx={{ fontSize: "30px", m: 0, fontWeight: 600, color: "#E70069" }}
-            >
-              {from.name}
-            </Typography>
-            <Typography variant="body1" gutterBottom sx={{ color: "gray" }}>
-              {from.state}
-            </Typography>
-          </Box>
-          <ArrowForward sx={{ verticalAlign: "middle", mx: 1 }} />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="body1"
-              gutterBottom
-              sx={{ fontSize: "30px", m: 0, fontWeight: 600, color: "#E70069" }}
-            >
-              {to.name}
-            </Typography>
-            <Typography variant="body1" gutterBottom sx={{ color: "gray" }}>
-              {to.state}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: "22px", m: 0, fontWeight: "bold" }}
-            >
-              {new Date(departureTime).toLocaleDateString("ind")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {new Date(departureTime).toLocaleTimeString()}
-            </Typography>
-          </Box>
-
-          <ArrowRight sx={{ verticalAlign: "middle" }} />
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: "22px", m: 0, fontWeight: "bold" }}
-            >
-              {new Date(arrivalTime).toLocaleDateString("ind")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {new Date(arrivalTime).toLocaleTimeString()}
-            </Typography>
-          </Box>
-        </Box>
+        <Path
+          fromCity={from.name}
+          fromState={from.state}
+          toCity={to.name}
+          toState={to.state}
+        />
+        <Dates arrivalTime={arrivalTime} departureTime={departureTime} />
 
         <Box
           sx={{
@@ -257,7 +110,7 @@ const TripCard = ({ trip }) => {
           >
             Fare: <span style={{ color: "#04A30C" }}>₹{fare}</span>
           </Typography>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Book Ticket
           </Button>
         </Box>

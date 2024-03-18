@@ -8,7 +8,7 @@ import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import CreateBus from "./pages/CreateBus";
 import Trips from "./pages/Trips";
-import TripDetails from "./pages/TripDetails";
+import Book from "./pages/Book";
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/trips" element={<Trips />} />
-        <Route path="/trip/:id" element={<TripDetails />} />
+        <Route path="/book/:id" element={<Book />} />
         <Route path="/about" element={<About />} />
         <Route path="/create-trip" element={<CreateTrip />} />
         <Route path="/create-bus" element={<CreateBus />} />

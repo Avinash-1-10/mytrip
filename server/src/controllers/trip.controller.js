@@ -111,13 +111,20 @@ const createTrip = async (req, res) => {
 
 const getTrip = async (req, res) => {
   try {
-    const trips = await Trip();
-    return req
+    const { tripId } = req.params;
+    const trip = await Trip.findById(tripId).populate("from").populate("to").populate("organizer").populate("bus");
+    if (!trip) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Trip not found"));
+    }
+    return res
       .status(200)
-      .json(new ApiResponse(201, trips, "Trips successfully retrieved"));
+      .json(new ApiResponse(200, trip, "Trip successfully retrieved"));
   } catch (error) {
     return res.status(500).json(new ApiResponse(500, null, error.message));
   }
 };
+
 
 export { createTrip, getTrip, getTrips };

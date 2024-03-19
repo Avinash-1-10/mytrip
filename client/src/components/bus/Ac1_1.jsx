@@ -1,13 +1,9 @@
 import { Box, Button, Paper } from "@mui/material";
 import React, { useState } from "react";
 
-const Ac2_2 = () => {
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  console.log(selectedSeats);
+const Ac1_1 = ({selectedSeats,setSelectedSeats}) => {
   const bookedSeats = ["LW2", "LA4", "RA1", "RW6"];
   const lw = ["LW1", "LW2", "LW3", "LW4", "LW5", "LW6", "LW7"];
-  const la = ["LA1", "LA2", "LA3", "LA4", "LA5", "LA6", "LA7"];
-  const ra = ["RA1", "RA2", "RA3", "RA4", "RA5", "RA6", "RA7"];
   const rw = ["RW1", "RW2", "RW3", "RW4", "RW5", "RW6", "RW7"];
 
   const toggleSeatSelection = (seat) => {
@@ -61,12 +57,6 @@ const Ac2_2 = () => {
             <Seat seat={seat} key={seat} />
           ))}
         </Box>
-        {/* Left Aisle */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {la.map((seat) => (
-            <Seat seat={seat} key={seat} />
-          ))}
-        </Box>
       </Box>
 
       {/* Right */}
@@ -77,15 +67,9 @@ const Ac2_2 = () => {
             <Seat seat={seat} key={seat} />
           ))}
         </Box>
-        {/* Right Aisle */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {ra.map((seat) => (
-            <Seat seat={seat} key={seat} />
-          ))}
-        </Box>
       </Box>
     </Paper>
   );
 };
 
-export default Ac2_2;
+export default Ac1_1;

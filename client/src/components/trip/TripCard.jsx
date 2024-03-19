@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import Path from "./Path";
 import Dates from "./Dates";
 import TripImage from "./TripImage";
+import Amenities from "./Amenities";
+import Rating from "./Rating";
 
 const TripCard = ({ trip }) => {
   const {
@@ -34,23 +36,7 @@ const TripCard = ({ trip }) => {
     navigate(`/book/${_id}`, { state: { id: _id } });
   };
 
-  const calculateRatingStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating - fullStars >= 0.5;
-    const remainingStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
-    return (
-      <>
-        {[...Array(fullStars)].map((_, index) => (
-          <Star key={index} sx={{ color: "gold" }} />
-        ))}
-        {hasHalfStar && <StarHalf sx={{ color: "gold" }} />}
-        {[...Array(remainingStars)].map((_, index) => (
-          <StarBorder key={index} sx={{ color: "gold" }} />
-        ))}
-      </>
-    );
-  };
 
   return (
     <Card sx={{ minWidth: 400 }}>
@@ -86,12 +72,9 @@ const TripCard = ({ trip }) => {
             justifyContent: "space-between",
           }}
         >
-          <Box sx={{ mr: 1, display: "flex", gap: 2 }}>
-            <Wifi />
-            <AcUnit />
-            <Tv />
-          </Box>
-          <Box>{calculateRatingStars(5)}</Box>
+          {/* Amenities */}
+          <Amenities amenities={bus.amenities}/>
+          <Box>{Rating(5)}</Box>
         </Box>
         <Divider sx={{ my: 1 }} />
         {/* fare and button */}

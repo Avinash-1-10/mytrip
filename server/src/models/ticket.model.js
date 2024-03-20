@@ -19,7 +19,7 @@ const ticketSchema = new Schema(
       type: String,
       required: true,
     },
-    fare: {
+    totalFare: {
       type: Number,
       required: true,
     },
@@ -31,11 +31,6 @@ const ticketSchema = new Schema(
       type: String,
       enum: ["booked", "cancelled"],
       default: "booked",
-    },
-    bus: {
-      type: Schema.Types.ObjectId,
-      ref: "Bus",
-      required: true,
     },
   },
   { timestamps: true }

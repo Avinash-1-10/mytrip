@@ -7,6 +7,7 @@ import cityRouter from "./routes/city.route.js";
 import cookieParser from "cookie-parser";
 import busRouter from "./routes/bus.route.js";
 import tripRouter from "./routes/trip.route.js";
+import paymentRouter from "./routes/payment.route.js";
 
 dotenv.config();
 
@@ -19,7 +20,8 @@ app.use(cookieParser());
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/city", cityRouter);
 app.use("/api/v1/bus", busRouter);
-app.use("/api/v1/trip", tripRouter)
+app.use("/api/v1/trip", tripRouter);
+app.use("/api/v1/payment", paymentRouter)
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

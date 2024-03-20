@@ -9,6 +9,7 @@ import Footer from "./components/common/Footer";
 import CreateBus from "./pages/CreateBus";
 import Trips from "./pages/Trips";
 import Book from "./pages/Book";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/create-trip" element={<CreateTrip />} />
         <Route path="/create-bus" element={<CreateBus />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
       <Footer />
     </Router>

@@ -69,11 +69,11 @@ const BookingPage = ({ trip }) => {
             Select Seats
           </Typography>
           {trip.bus.type === "AC-2+1" ? (
-            <Ac2_1 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}/>
+            <Ac2_1 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} bookedSeats={trip.bookedSeats}/>
           ) : trip.bus.type === "AC-2+2" ? (
-            <Ac2_2 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}/>
+            <Ac2_2 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} bookedSeats={trip.bookedSeats}/>
           ) : (
-            <Ac1_1 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}/>
+            <Ac1_1 selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} bookedSeats={trip.bookedSeats}/>
           )}
 
           <Paper sx={{ height: "300px", display: "flex", flexWrap: "wrap", borderRadius:"5px" }}>
@@ -89,7 +89,7 @@ const BookingPage = ({ trip }) => {
       {/* Ticket Details */}
       <Grid item xs={12} md={5}>
         <Box elevation={3} style={{ padding: "20px" }}>
-          <TicketDetails selectedSeats={selectedSeats} fare={trip.fare}/>
+          <TicketDetails selectedSeats={selectedSeats} fare={trip.fare} trip={trip._id}/>
         </Box>
       </Grid>
     </Grid>

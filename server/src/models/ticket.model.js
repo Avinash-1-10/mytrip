@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-
 const ticketSchema = new Schema(
   {
     trip: {
@@ -15,22 +14,24 @@ const ticketSchema = new Schema(
       ref: "User",
       required: true,
     },
-    seatNumber: {
-      type: String,
-      required: true,
-    },
+    seats: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     totalFare: {
       type: Number,
       required: true,
     },
-    paymentCompleted: {
-      type: Boolean,
-      default: false,
-    },
-    status: {
+    paymentStatus: {
       type: String,
-      enum: ["booked", "cancelled"],
-      default: "booked",
+      required: true,
+      enum: ["due", "success"],
+      default: "due",
+    },
+    paymentId: {
+      type: String,
     },
   },
   { timestamps: true }

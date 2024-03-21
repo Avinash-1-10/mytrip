@@ -28,6 +28,7 @@ const TripCard = ({ trip }) => {
     arrivalTime,
     fare,
     availableSeats,
+    bookedSeats,
     departureSlot,
     bus,
   } = trip;
@@ -35,8 +36,6 @@ const TripCard = ({ trip }) => {
   const handleSubmit = () => {
     navigate(`/book/${_id}`, { state: { id: _id } });
   };
-
-
 
   return (
     <Card sx={{ minWidth: 400 }}>
@@ -73,7 +72,7 @@ const TripCard = ({ trip }) => {
           }}
         >
           {/* Amenities */}
-          <Amenities amenities={bus.amenities}/>
+          <Amenities amenities={bus.amenities} />
           <Box>{Rating(5)}</Box>
         </Box>
         <Divider sx={{ my: 1 }} />
@@ -101,10 +100,17 @@ const TripCard = ({ trip }) => {
         <Typography
           variant="body2"
           gutterBottom
-          sx={{ color: "green", fontSize: "16px", fontWeight: "bold" }}
+          sx={{
+            color:
+              availableSeats.length - bookedSeats.length <= 5 ? "red" : "green",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
         >
-          Seats Left: {availableSeats.length} out of {bus.seatingCapacity}
+          Seats Left: {availableSeats.length - bookedSeats.length} out of{" "}
+          {availableSeats.length}
         </Typography>
+
         <Grid container justifyContent="center"></Grid>
       </CardContent>
     </Card>

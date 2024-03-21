@@ -1,28 +1,55 @@
+import Ticket from "../models/ticket.model.js";
 import instance from "../payment/index.js";
 import crypto from "crypto";
+import ApiResponse from "../utils/ApiResponse.js";
+import Trip from "../models/trip.model.js";
 
 const checkout = async (req, res) => {
-  const { amount } = req.body;
+  const { amount, trip: tripId, seats } = req.body; // Rename trip to tripId
+  const user = req.user;
   try {
     const options = {
       amount: Number(amount * 100),
       currency: "INR",
     };
     const order = await instance.orders.create(options);
-
-    res.status(200).json({
-      success: true,
-      order,
-    });
+    if (order) {
+      const ticket = new Ticket({
+        trip: tripId, // Use tripId instead of trip
+        user: user._id,
+        seats,
+        totalFare: amount,
+      });
+      const trip = await Trip.findById(tripId); // Use tripId instead of trip
+      for (const seat of seats) {
+        // Check if the seat is already booked
+        if (trip.bookedSeats.includes(seat)) {
+          return res.status(400).json(new ApiResponse(400, null, `Seat ${seat} is already booked`))
+        }
+      }
+      trip.bookedSeats = [...trip.bookedSeats, ...seats];
+      await trip.save(); // Ensure to await the save operation
+      await ticket.save();
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            { order, ticket: ticket._id },
+            "Ticket and order created successfully"
+          )
+        );
+    }
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Failed to create order" });
   }
 };
 
+
 const verifyPayment = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, ticket } =
       req.body;
     const data = `${razorpay_order_id}|${razorpay_payment_id}`;
 
@@ -34,7 +61,11 @@ const verifyPayment = async (req, res) => {
     const isSignatureValid = calculatedSignature === razorpay_signature;
 
     if (isSignatureValid) {
-      res.status(200).json({ success: true });
+      const userTicket = await Ticket.findById(ticket);
+      userTicket.paymentStatus = "success";
+      userTicket.paymentId = razorpay_payment_id;
+      await userTicket.save()
+      res.status(200).json(new ApiResponse(200, userTicket, "Success"));
     } else {
       res.status(400).json({ success: false, error: "Invalid signature" });
     }

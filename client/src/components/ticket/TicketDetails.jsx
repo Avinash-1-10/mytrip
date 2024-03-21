@@ -20,7 +20,7 @@ const Section = ({ title, value, bg }) => {
   );
 };
 
-const TicketDetails = ({ selectedSeats, fare }) => {
+const TicketDetails = ({ selectedSeats, fare, trip }) => {
   const navigate = useNavigate();
   const farePerSeat = fare;
   const discountPercentage = 10;
@@ -29,17 +29,27 @@ const TicketDetails = ({ selectedSeats, fare }) => {
   const discountAmount = (totalFare * discountPercentage) / 100;
   const taxAmount = (totalFare - discountAmount) * (taxPercentage / 100);
   const totalAmount = totalFare - discountAmount + taxAmount;
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const checkout = async (e) => {
     const {
       data: { key },
     } = await axios.get("http://localhost:8000/api/v1/payment/key");
 
-    const {
-      data: { order },
-    } = await axios.post("http://localhost:8000/api/v1/payment/checkout", {
-      amount: totalAmount,
-    });
+    const { data } = await axios.post(
+      "http://localhost:8000/api/v1/payment/checkout",
+      {
+        amount: totalAmount,
+        trip,
+        seats: selectedSeats,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      }
+    );
+    // console.table(data.data.order.amount);
     const verify = async (info) => {
       const { data } = await axios.post(
         "http://localhost:8000/api/v1/payment/verification",
@@ -47,22 +57,24 @@ const TicketDetails = ({ selectedSeats, fare }) => {
       );
       if (data.success) {
         navigate("/payment-success");
+        console.log(data)
       }
     };
 
     var options = {
       key,
-      amount: order.amount,
+      amount: data.data.order.amount,
       currency: "INR",
       name: "Acme Corp",
       description: "Test Transaction",
       image: "https://avatars.githubusercontent.com/u/111282375?v=4",
-      order_id: order.id,
+      order_id: data.data.order.id,
       handler: async function (response) {
         const info = {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
           razorpay_signature: response.razorpay_signature,
+          ticket:data.data.ticket
         };
         await verify(info);
       },

@@ -15,7 +15,7 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { Link } from "react-router-dom";
 
 const pages = ["About Us", "Contact"];
-const settings = ["Profile", "My Tickets", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "My Tickets", "Logout"];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -59,7 +59,7 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            Reserve
+            MyTrip
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -91,12 +91,22 @@ function Navbar() {
                 display: { xs: "block", md: "none", color: "#1876D1" },
               }}
             >
+              <div style={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
+                <Link to="/trips">
+                  <Button>Trips</Button>
+                </Link>
+                <Link to="/create-bus">
+                  <Button>Add Bus</Button>
+                </Link>
+                <Link to="/create-trip">
+                  <Button>Add Trip</Button>
+                </Link>
+              </div>
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-              <Link to="/add-bus">Add Bus</Link>
             </Menu>
           </Box>
           <DirectionsBusIcon
@@ -118,7 +128,7 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            MyTrip
           </Typography>
           <Box
             sx={{

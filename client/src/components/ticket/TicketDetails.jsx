@@ -30,6 +30,7 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
   const taxAmount = (totalFare - discountAmount) * (taxPercentage / 100);
   const totalAmount = totalFare - discountAmount + taxAmount;
   const user = JSON.parse(localStorage.getItem("user"));
+  
 
   const checkout = async (e) => {
     const {
@@ -56,8 +57,9 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
         info
       );
       if (data.success) {
-        navigate("/payment-success");
-        console.log(data)
+        navigate("/payment-success", {
+          state: { ticketId: data.data.ticketId },
+        });
       }
     };
 
@@ -65,7 +67,7 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
       key,
       amount: data.data.order.amount,
       currency: "INR",
-      name: "Acme Corp",
+      name: "MyTrip",
       description: "Test Transaction",
       image: "https://avatars.githubusercontent.com/u/111282375?v=4",
       order_id: data.data.order.id,
@@ -74,14 +76,14 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
           razorpay_signature: response.razorpay_signature,
-          ticket:data.data.ticket
+          ticket: data.data.ticket,
         };
         await verify(info);
       },
       prefill: {
-        name: "Gaurav Kumar",
-        email: "gaurav.kumar@example.com",
-        contact: "9000090000",
+        name: user.user.name,
+        email: user.user.email,
+        contact: user.user.contactNumber,
       },
       notes: {
         address: "Razorpay Corporate Office",
@@ -92,13 +94,14 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
     };
     var rzp1 = new Razorpay(options);
     rzp1.on("payment.failed", function (response) {
-      alert(response.error.code);
-      alert(response.error.description);
-      alert(response.error.source);
-      alert(response.error.step);
-      alert(response.error.reason);
-      alert(response.error.metadata.order_id);
-      alert(response.error.metadata.payment_id);
+      navigate("/payment-failed", { state: { error: response.error.reason } });
+      // alert(response.error.code);
+      // alert(response.error.description);
+      // alert(response.error.source);
+      // alert(response.error.step);
+      // alert(response.error.reason);
+      // alert(response.error.metadata.order_id);
+      // alert(response.error.metadata.payment_id);
     });
     rzp1.open();
 

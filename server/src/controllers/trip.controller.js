@@ -18,8 +18,9 @@ const getDepartureSlot = function (dateString) {
 };
 
 const getTrips = async (req, res) => {
+  const { from, to, date } = req.query;
   try {
-    const trips = await Trip.find()
+    const trips = await Trip.find({ $or: [{ from }, { to }] })
       .populate({
         path: "organizer",
         select:
@@ -39,6 +40,32 @@ const getTrips = async (req, res) => {
           "-_id -__v -createdAt -updatedAt -isAvailable -operator -busNumber -image -isAvailable",
       })
       .select("-__v -createdAt -updatedAt");
+
+    if (trips.length === 0) {
+      const allTrips = await Trip.find()
+        .populate({
+          path: "organizer",
+          select:
+            "-_id -password -contactNumber -role -createdAt -updatedAt -__v -refreshToken",
+        })
+        .populate({
+          path: "from",
+          select: "-_id -__v",
+        })
+        .populate({
+          path: "to",
+          select: "-_id -__v",
+        })
+        .populate({
+          path: "bus",
+          select:
+            "-_id -__v -createdAt -updatedAt -isAvailable -operator -busNumber -image -isAvailable",
+        })
+        .select("-__v -createdAt -updatedAt");
+      return res
+        .status(200)
+        .json(new ApiResponse(200, allTrips, "Trips successfully retrieved"));
+    }
 
     return res
       .status(200)
@@ -66,7 +93,7 @@ const createTrip = async (req, res) => {
         .status(400)
         .json(new ApiResponse(400, null, "All fields are required"));
     }
-  
+
     const image = await uploadOnCloudinary(tripImageLocalPath);
     const departureSlot = getDepartureSlot(departureTime);
     const bookedBus = await Bus.findById(bus);
@@ -92,7 +119,7 @@ const createTrip = async (req, res) => {
       trip.availableSeats = ac1_1;
     } else if (bookedBus.seatingCapacity == 21) {
       trip.availableSeats = ac2_1;
-    } else if(bookedBus.seatingCapacity == 28){
+    } else if (bookedBus.seatingCapacity == 28) {
       trip.availableSeats = ac2_2;
     }
 
@@ -112,11 +139,13 @@ const createTrip = async (req, res) => {
 const getTrip = async (req, res) => {
   try {
     const { tripId } = req.params;
-    const trip = await Trip.findById(tripId).populate("from").populate("to").populate("organizer").populate("bus");
+    const trip = await Trip.findById(tripId)
+      .populate("from")
+      .populate("to")
+      .populate("organizer")
+      .populate("bus");
     if (!trip) {
-      return res
-        .status(400)
-        .json(new ApiResponse(400, null, "Trip not found"));
+      return res.status(400).json(new ApiResponse(400, null, "Trip not found"));
     }
     return res
       .status(200)
@@ -125,6 +154,5 @@ const getTrip = async (req, res) => {
     return res.status(500).json(new ApiResponse(500, null, error.message));
   }
 };
-
 
 export { createTrip, getTrip, getTrips };

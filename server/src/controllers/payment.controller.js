@@ -65,7 +65,7 @@ const verifyPayment = async (req, res) => {
       userTicket.paymentStatus = "success";
       userTicket.paymentId = razorpay_payment_id;
       await userTicket.save()
-      res.status(200).json(new ApiResponse(200, userTicket, "Success"));
+      res.status(200).json(new ApiResponse(200, {ticketId:userTicket._id}, "Success"));
     } else {
       res.status(400).json({ success: false, error: "Invalid signature" });
     }

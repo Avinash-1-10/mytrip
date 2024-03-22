@@ -8,8 +8,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SearchBus = () => {
+  const navigate = useNavigate();
   const [value, setValue] = useState(dayjs("2022-04-17"));
   const [fromCities, setFromCities] = useState([]);
   const [toCities, setToCities] = useState([]);
@@ -42,9 +44,21 @@ const SearchBus = () => {
   }, [searchData.to]);
 
   const handleSearchData = () => {
-    console.log(searchData);
-    const date = searchData.date && new Date(searchData.date.toString());
-    console.log(date);
+    const date = searchData.date && new Date(searchData.date);
+    if (searchData.from && searchData.to && searchData.date) {
+      navigate(
+        `/trips/from=${searchData.from}&to=${searchData.to}&date=${Date.parse(
+          date
+        )}`,
+        {
+          state: {
+            from: searchData.from,
+            to: searchData.to,
+            date: Date.parse(date),
+          },
+        }
+      );
+    }
   };
 
   return (

@@ -10,6 +10,7 @@ import CreateBus from "./pages/CreateBus";
 import Trips from "./pages/Trips";
 import Book from "./pages/Book";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed";
 
 const App = () => {
   return (
@@ -19,12 +20,13 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/trips" element={<Trips />} />
+        <Route path="/trips/:info" element={<Trips />} />
         <Route path="/book/:id" element={<Book />} />
         <Route path="/about" element={<About />} />
         <Route path="/create-trip" element={<CreateTrip />} />
         <Route path="/create-bus" element={<CreateBus />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
       </Routes>
       <Footer />
     </Router>

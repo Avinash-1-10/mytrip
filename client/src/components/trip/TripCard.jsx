@@ -8,7 +8,6 @@ import {
   Box,
   Divider,
 } from "@mui/material";
-import { Star, StarBorder, Wifi, AcUnit, Tv } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Path from "./Path";
 import Dates from "./Dates";
@@ -110,8 +109,6 @@ const TripCard = ({ trip }) => {
           Seats Left: {availableSeats.length - bookedSeats.length} out of{" "}
           {availableSeats.length}
         </Typography>
-
-        <Grid container justifyContent="center"></Grid>
       </CardContent>
     </Card>
   );

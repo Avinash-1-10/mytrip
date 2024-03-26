@@ -5,8 +5,12 @@ import ApiResponse from "../utils/ApiResponse.js";
 import Trip from "../models/trip.model.js";
 
 const checkout = async (req, res) => {
-  const { amount, trip: tripId, seats } = req.body; // Rename trip to tripId
+  const { amount, trip: tripId, seats } = req.body;
   const user = req.user;
+
+  if(!amount || !tripId || !seats){
+    return res.status(400).json(new ApiResponse(400, null, "Every Field is required"))
+  }
   try {
     const options = {
       amount: Number(amount * 100),
@@ -15,7 +19,7 @@ const checkout = async (req, res) => {
     const order = await instance.orders.create(options);
     if (order) {
       const ticket = new Ticket({
-        trip: tripId, // Use tripId instead of trip
+        trip: tripId,
         user: user._id,
         seats,
         totalFare: amount,

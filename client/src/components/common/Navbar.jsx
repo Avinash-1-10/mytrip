@@ -92,9 +92,6 @@ function Navbar() {
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
-                <Link to="/trips">
-                  <Button>Trips</Button>
-                </Link>
                 <Link to="/create-bus">
                   <Button>Add Bus</Button>
                 </Link>
@@ -137,9 +134,6 @@ function Navbar() {
               alignItems: "center",
             }}
           >
-            <Link to="/trips">
-              <Button>Trips</Button>
-            </Link>
             <Link to="/create-bus">
               <Button>Add Bus</Button>
             </Link>

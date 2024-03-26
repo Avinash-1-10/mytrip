@@ -29,8 +29,8 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
   const discountAmount = (totalFare * discountPercentage) / 100;
   const taxAmount = (totalFare - discountAmount) * (taxPercentage / 100);
   const totalAmount = totalFare - discountAmount + taxAmount;
+  const accessToken = localStorage.getItem("accessToken");
   const user = JSON.parse(localStorage.getItem("user"));
-  
 
   const checkout = async (e) => {
     const {
@@ -46,7 +46,7 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
@@ -81,9 +81,9 @@ const TicketDetails = ({ selectedSeats, fare, trip }) => {
         await verify(info);
       },
       prefill: {
-        name: user.user.name,
-        email: user.user.email,
-        contact: user.user.contactNumber,
+        name: user.name,
+        email: user.email,
+        contact: user.contactNumber,
       },
       notes: {
         address: "Razorpay Corporate Office",

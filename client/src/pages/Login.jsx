@@ -9,35 +9,41 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import SnackBar from "../components/errors/SnackBar";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showAlert, setAlert] = useState(false);
+  const [isError, setError] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
 
   const handleLogin = async () => {
-    console.log("Hi")
     setLoading(true);
-    try {
-      const {data} = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        {
-          email,
-          password,
-        }
-      );
-      if (data.statusCode === 200) {
-        console.log(data)
-        localStorage.setItem("user", JSON.stringify(data.data))
+    await axios
+      .post("http://localhost:8000/api/v1/user/login", {
+        email,
+        password,
+      })
+      .then((data) => {
+        setAlert(true);
+        setError(false);
+        setAlertMsg(data?.data?.message);
+        localStorage.setItem("user", JSON.stringify(data.data.data.user));
+        localStorage.setItem("accessToken", data.data.data.accessToken);
+        setInterval(() => {
+          navigate("/");
+        }, 1000);
         setLoading(false);
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-    } finally {
-      setLoading(false);
-    }
+      })
+      .catch((err) => {
+        setAlert(true);
+        setError(true);
+        setAlertMsg(err?.response?.data?.message);
+        setLoading(false);
+      });
   };
 
   return (
@@ -83,6 +89,12 @@ const Login = () => {
           </Grid>
         </Grid>
       </Box>
+      <SnackBar
+        open={showAlert}
+        setOpen={setAlert}
+        isError={isError}
+        alertMsg={alertMsg}
+      />
     </Container>
   );
 };

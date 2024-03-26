@@ -26,7 +26,7 @@ const Trips = () => {
   };
 
   useEffect(() => {
-    // getTrips();
+    getTrips();
   }, []);
 
   return (

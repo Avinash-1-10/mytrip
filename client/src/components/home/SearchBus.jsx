@@ -43,7 +43,8 @@ const SearchBus = () => {
     getToCities();
   }, [searchData.to]);
 
-  const handleSearchData = () => {
+  const handleSearchData = (e) => {
+    e.preventDefault();
     const date = searchData.date && new Date(searchData.date);
     if (searchData.from && searchData.to && searchData.date) {
       navigate(
@@ -76,6 +77,7 @@ const SearchBus = () => {
       }}
     >
       <Box
+        component="form"
         sx={{
           background: "rgba(255, 255, 255, 0.8)",
           display: "flex",
@@ -89,6 +91,7 @@ const SearchBus = () => {
           borderRadius: 3,
           backdropFilter: "blur(10px)",
         }}
+        onSubmit={handleSearchData}
       >
         <Autocomplete
           disablePortal
@@ -104,7 +107,7 @@ const SearchBus = () => {
             });
           }}
           renderInput={(params) => (
-            <TextField {...params} label="From" variant="outlined" />
+            <TextField {...params} label="From" variant="outlined" required />
           )}
         />
         <Autocomplete
@@ -118,7 +121,7 @@ const SearchBus = () => {
             setSearchData({ ...searchData, to: newValue ? newValue._id : "" });
           }}
           renderInput={(params) => (
-            <TextField {...params} label="To" variant="outlined" />
+            <TextField {...params} label="To" variant="outlined" required />
           )}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -132,7 +135,7 @@ const SearchBus = () => {
             }}
           />
         </LocalizationProvider>
-        <IconButton onClick={handleSearchData}>
+        <IconButton type="submit">
           <SendIcon color="primary" />
         </IconButton>
       </Box>

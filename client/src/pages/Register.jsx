@@ -5,14 +5,12 @@ import {
   Container,
   Grid,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Typography,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import SnackBar from "../components/errors/SnackBar";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,42 +20,63 @@ const Register = () => {
   const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showAlert, setAlert] = useState(false);
+  const [isError, setError] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
 
-  const handleSignup = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setAlert(true);
+      setError(true);
+      setAlertMsg(
+        "Passwords do not match. Please check the confirmed password."
+      );
+      return;
+    }
     setLoading(true);
-    try {
-      const response = await axios.post("http://localhost:8000/api/v1/user/register", {
+    await axios
+      .post("http://localhost:8000/api/v1/user/register", {
         name,
         email,
-        contactNumber:contact,
+        contactNumber: contact,
         password,
-      });
-
-      if (response.status === 201) {
+      })
+      .then((data) => {
+        setAlert(true);
+        setError(false);
+        setAlertMsg(data?.data?.message);
+        setInterval(() => {
+          navigate("/login");
+        }, 1000);
         setLoading(false);
-        navigate("/login");
-      }
-    } catch (error) {
-      console.error("Error signing up:", error);
-    } finally {
-      setLoading(false);
-    }
+      })
+      .catch((err) => {
+        setAlert(true);
+        setError(true);
+        setAlertMsg(err?.response?.data?.message);
+        setLoading(false);
+      });
   };
 
   return (
     <Container maxWidth="xs">
       <Box
+        component="form"
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
         }}
+        onSubmit={handleRegister}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Name"
               variant="outlined"
               value={name}
@@ -67,6 +86,7 @@ const Register = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              type="email"
               label="Email"
               variant="outlined"
               value={email}
@@ -76,6 +96,8 @@ const Register = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
+              type="number"
               label="Contact"
               variant="outlined"
               value={contact}
@@ -85,6 +107,7 @@ const Register = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               type="password"
               label="Password"
               variant="outlined"
@@ -95,6 +118,7 @@ const Register = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               type="password"
               label="Confirm Password"
               variant="outlined"
@@ -107,14 +131,25 @@ const Register = () => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={handleSignup}
+              type="submit"
               disabled={loading}
             >
               {loading ? <CircularProgress /> : "Signup"}
             </Button>
           </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{ textAlign: "center" }}>
+              Already have an account? <Link to="/login">Log in here</Link>
+            </Typography>
+          </Grid>
         </Grid>
       </Box>
+      <SnackBar
+        open={showAlert}
+        setOpen={setAlert}
+        isError={isError}
+        alertMsg={alertMsg}
+      />
     </Container>
   );
 };

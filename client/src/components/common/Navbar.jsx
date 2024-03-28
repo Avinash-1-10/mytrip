@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const pages = ["About Us", "Contact"];
 const settings = ["Profile", "My Tickets", "Logout"];
@@ -20,6 +21,30 @@ const settings = ["Profile", "My Tickets", "Logout"];
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const accessToken = localStorage.getItem("accessToken");
+
+  const logout = async () => {
+    await axios
+      .post(
+        "http://localhost:8000/api/v1/user/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("Token");
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -91,7 +116,13 @@ function Navbar() {
                 display: { xs: "block", md: "none", color: "#1876D1" },
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
                 <Link to="/create-bus">
                   <Button>Add Bus</Button>
                 </Link>
@@ -134,12 +165,16 @@ function Navbar() {
               alignItems: "center",
             }}
           >
-            <Link to="/create-bus">
-              <Button>Add Bus</Button>
-            </Link>
-            <Link to="/create-trip">
-              <Button>Add Trip</Button>
-            </Link>
+            {user?.role === "provider" && (
+              <>
+                <Link to="/create-bus">
+                  <Button>Add Bus</Button>
+                </Link>
+                <Link to="/create-trip">
+                  <Button>Add Trip</Button>
+                </Link>
+              </>
+            )}
             {pages.map((page) => (
               <Button
                 key={page}
@@ -173,11 +208,15 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <Box sx={{ display: "flex", flexDirection: "column", px: 2 }}>
+                <Link to="/profile">
+                  <Button>Profile</Button>
+                </Link>
+                {user&&<Button onClick={logout}>Logout</Button>}
+                <Link to="/login">
+                  <Button>Login</Button>
+                </Link>
+              </Box>
             </Menu>
           </Box>
         </Toolbar>

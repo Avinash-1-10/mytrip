@@ -1,5 +1,5 @@
 import Ticket from "../models/ticket.model.js";
-import instance from "../payment/index.js";
+import instance from "../utils/razorpay.js";
 import crypto from "crypto";
 import ApiResponse from "../utils/ApiResponse.js";
 import Trip from "../models/trip.model.js";

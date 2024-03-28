@@ -11,8 +11,10 @@ import Trips from "./pages/Trips";
 import Book from "./pages/Book";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
+import ProtectedRoute from "./ProtectedRoute";
 
 const App = () => {
+  console.log();
   return (
     <Router>
       <Navbar />
@@ -21,10 +23,31 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/trips/:info" element={<Trips />} />
-        <Route path="/book/:id" element={<Book />} />
+        <Route
+          path="/book/:id"
+          element={
+            <ProtectedRoute>
+              <Book />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/about" element={<About />} />
-        <Route path="/create-trip" element={<CreateTrip />} />
-        <Route path="/create-bus" element={<CreateBus />} />
+        <Route
+          path="/create-trip"
+          element={
+            <ProtectedRoute>
+              <CreateTrip />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-bus"
+          element={
+            <ProtectedRoute>
+              <CreateBus />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
       </Routes>

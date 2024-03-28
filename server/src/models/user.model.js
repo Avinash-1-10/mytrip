@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 // Define the schema for the user model
 const userSchema = new mongoose.Schema(
@@ -30,9 +30,9 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "provider"],
       default: "customer",
     },
-    rating:{
+    rating: {
       type: Number,
-      default:0
+      default: 0,
     },
     refreshToken: {
       type: String,
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
     const hashedPassword = await bcrypt.hash(this.password, 10);

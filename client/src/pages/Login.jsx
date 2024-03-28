@@ -6,9 +6,10 @@ import {
   Grid,
   Box,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import SnackBar from "../components/errors/SnackBar";
 
 const Login = () => {
@@ -20,7 +21,8 @@ const Login = () => {
   const [isError, setError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setLoading(true);
     await axios
       .post("http://localhost:8000/api/v1/user/login", {
@@ -34,14 +36,14 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(data.data.data.user));
         localStorage.setItem("accessToken", data.data.data.accessToken);
         setInterval(() => {
+          setLoading(false);
           navigate("/");
         }, 1000);
-        setLoading(false);
       })
       .catch((err) => {
         setAlert(true);
         setError(true);
-        setAlertMsg(err?.response?.data?.message);
+        setAlertMsg(err?.response?.data?.message || "An Error Occured");
         setLoading(false);
       });
   };
@@ -49,19 +51,23 @@ const Login = () => {
   return (
     <Container maxWidth="xs">
       <Box
+        component="form"
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
         }}
+        onSubmit={handleLogin}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               fullWidth
+              type="email"
               label="Email"
               variant="outlined"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -72,6 +78,7 @@ const Login = () => {
               type="password"
               label="Password"
               variant="outlined"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -81,14 +88,20 @@ const Login = () => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={handleLogin}
+              type="submit"
               disabled={loading}
             >
               {loading ? <CircularProgress size={24} /> : "Login"}
             </Button>
           </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{ textAlign: "center" }}>
+              New to MyTrip? <Link to="/register">Register now</Link>
+            </Typography>
+          </Grid>
         </Grid>
       </Box>
+
       <SnackBar
         open={showAlert}
         setOpen={setAlert}

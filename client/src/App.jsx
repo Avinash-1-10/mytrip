@@ -12,9 +12,11 @@ import Book from "./pages/Book";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./pages/Profile";
+import MyTickets from "./pages/MyTickets";
 
 const App = () => {
-  console.log();
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <Router>
       <Navbar />
@@ -22,7 +24,23 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/trips/:info" element={<Trips />} />
+        <Route
+          path="/my-tickets"
+          element={
+            <ProtectedRoute>
+              <MyTickets />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/book/:id"
           element={

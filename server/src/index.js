@@ -12,7 +12,6 @@ import ticketRouter from "./routes/ticekt.route.js";
 
 dotenv.config();
 
-
 const app = express();
 connectDB();
 app.use(cors());

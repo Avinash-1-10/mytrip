@@ -38,6 +38,7 @@ const Login = () => {
         setInterval(() => {
           setLoading(false);
           navigate("/");
+          window.location.reload()
         }, 1000);
       })
       .catch((err) => {

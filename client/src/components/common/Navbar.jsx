@@ -12,13 +12,14 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const pages = ["About Us", "Contact"];
 const settings = ["Profile", "My Tickets", "Logout"];
 
 function Navbar() {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -36,7 +37,7 @@ function Navbar() {
         }
       )
       .then((data) => {
-        console.log(data);
+
       })
       .catch((err) => {
         console.log(err);
@@ -44,6 +45,7 @@ function Navbar() {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("Token");
+    navigate("/")
   };
 
   const handleOpenNavMenu = (event) => {
@@ -165,6 +167,9 @@ function Navbar() {
               alignItems: "center",
             }}
           >
+            <Link to="/my-tickets">
+              <Button>My Tickets</Button>
+            </Link>
             {user?.role === "provider" && (
               <>
                 <Link to="/create-bus">
@@ -175,15 +180,6 @@ function Navbar() {
                 </Link>
               </>
             )}
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, display: "block", color: "#1876D1" }}
-              >
-                {page}
-              </Button>
-            ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -212,7 +208,7 @@ function Navbar() {
                 <Link to="/profile">
                   <Button>Profile</Button>
                 </Link>
-                {user&&<Button onClick={logout}>Logout</Button>}
+                {user && <Button onClick={logout}>Logout</Button>}
                 <Link to="/login">
                   <Button>Login</Button>
                 </Link>

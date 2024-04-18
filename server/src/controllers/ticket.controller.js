@@ -43,4 +43,22 @@ const getTicket = async (req, res) => {
   }
 };
 
-export { getAllTickets, getTicket };
+const getUserTickets = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const tickets = await Ticket.find({ user:userId });
+    
+    return res
+      .status(200)
+      .json(new ApiResponse(200, tickets, "Tickets fetched successfully"));
+  } catch (error) {
+    console.error("Error fetching tickets:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, null, "Failed to fetch tickets"));
+  }
+};
+
+
+
+export { getAllTickets, getTicket, getUserTickets };

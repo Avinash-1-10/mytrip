@@ -59,6 +59,7 @@ const SearchBus = () => {
           },
         }
       );
+      window.location.reload()
     }
   };
 
